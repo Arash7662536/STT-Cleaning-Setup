@@ -1,0 +1,57 @@
+# Dataset Pipeline Configuration Example
+# Copy this file to config.yaml and customize for your needs
+
+# Input/Output Directories
+input_dir: "data/input"      # Directory containing WAV and SRT files
+output_dir: "data/output"    # Root output directory
+
+# Processing Steps (set to true/false to enable/disable)
+steps:
+  chunking: true      # Step 1: Split audio by SRT timestamps
+  merging: false      # Step 2: Merge pairs of segments (optional)
+  validation: true    # Step 3: Validate with Whisper models
+
+# Chunking Configuration
+chunking:
+  min_duration_ms: 500  # Minimum chunk duration in milliseconds
+  output_subdir: "chunked"  # Subdirectory for chunked output
+  metadata_file: "metadata_chunked.csv"
+
+# Merging Configuration (optional)
+merging:
+  keep_first_segment: true  # Keep the first segment or discard it
+  output_subdir: "merged"   # Subdirectory for merged output
+  metadata_file: "metadata_merged.csv"
+
+# Validation Configuration
+validation:
+  # vllm API endpoints
+  primary_port: 8000     # Whisper Large V3 (high accuracy)
+  secondary_port: 8001   # Whisper Turbo (judge/validator)
+
+  # Model names
+  primary_model: "openai/whisper-large-v3"
+  secondary_model: "openai/whisper-large-v3-turbo"
+
+  # Validation logic
+  boundary_window: 2  # Number of words to check at start/end
+  language: "fa"      # Language code (fa for Farsi/Persian)
+
+  # Performance
+  max_workers: 8      # Number of concurrent workers
+
+  # Output files
+  output_metadata: "metadata_validated.csv"
+  flagged_file: "flagged_files.csv"
+
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "pipeline.log"
+  console: true
+
+# Audio Processing
+audio:
+  format: "wav"
+  sample_rate: 16000  # Target sample rate (optional)
