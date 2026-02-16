@@ -122,10 +122,10 @@ data/input/
 
 ```bash
 # Terminal 1: Primary model
-vllm serve openai/whisper-large-v3 --port 8000
+vllm serve openai/whisper-large-v3 --gpu-memory-utilization 0.4 --port 8000
 
 # Terminal 2: Secondary model
-vllm serve openai/whisper-large-v3-turbo --port 8001
+vllm serve openai/whisper-large-v3-turbo --gpu-memory-utilization 0.4 --port 8001
 
 # Or use the setup script
 bash scripts/setup_vllm.sh

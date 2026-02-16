@@ -19,7 +19,7 @@ Complete installation guide for the Dataset Pipeline project.
 
 3. **vllm** (for validation step)
    ```bash
-   pip install vllm
+   pip install "vllm[audio]"
    ```
 
 ### Optional Software
@@ -119,10 +119,10 @@ mkdir -p data/output
 
 ```bash
 # Terminal 1: Primary Whisper model
-vllm serve openai/whisper-large-v3 --port 8000
+vllm serve openai/whisper-large-v3 --gpu-memory-utilization 0.4 --port 8000
 
 # Terminal 2: Secondary Whisper model
-vllm serve openai/whisper-large-v3-turbo --port 8001
+vllm serve openai/whisper-large-v3-turbo --gpu-memory-utilization 0.4 --port 8001
 ```
 
 Or use the provided script:
