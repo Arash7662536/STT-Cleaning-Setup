@@ -1,7 +1,7 @@
 # Core dependencies for dataset pipeline
 pydub>=0.25.1
 pysrt>=1.1.2
-hazm>=1.0.0
+hazm==0.11.0
 openai>=1.0.0
 pyyaml>=6.0
 tqdm>=4.66.0
