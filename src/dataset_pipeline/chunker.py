@@ -53,9 +53,9 @@ class AudioChunker:
         try:
             logger.info(f"Chunking: {Path(audio_path).name}")
 
-            # Load SRT and audio
+            # Load SRT and audio (format inferred from extension: .wav, .mp3, ...)
             subs = pysrt.open(srt_path, encoding='utf-8')
-            audio = AudioSegment.from_wav(audio_path)
+            audio = AudioSegment.from_file(audio_path)
 
             valid_chunks = []
             skipped = 0

@@ -5,19 +5,27 @@ Utility functions for the dataset pipeline.
 import os
 import logging
 from pathlib import Path
-from typing import List, Tuple
+from typing import Iterable, List, Tuple, Union
 
 
 logger = logging.getLogger(__name__)
 
 
-def find_audio_srt_pairs(input_dir: str, audio_ext: str = ".wav") -> List[Tuple[str, str]]:
+SUPPORTED_AUDIO_EXTS: Tuple[str, ...] = (".wav", ".mp3")
+
+
+def find_audio_srt_pairs(
+    input_dir: str,
+    audio_ext: Union[str, Iterable[str]] = SUPPORTED_AUDIO_EXTS,
+) -> List[Tuple[str, str]]:
     """
     Find all audio files and their corresponding SRT files.
 
     Args:
         input_dir: Directory to search for audio files
-        audio_ext: Audio file extension (default: .wav)
+        audio_ext: Audio file extension(s). Accepts a single extension string
+            (e.g. ".wav") or an iterable of extensions (e.g. (".wav", ".mp3")).
+            Defaults to both .wav and .mp3.
 
     Returns:
         List of (audio_path, srt_path) tuples
@@ -28,7 +36,22 @@ def find_audio_srt_pairs(input_dir: str, audio_ext: str = ".wav") -> List[Tuple[
     if not input_path.exists():
         raise ValueError(f"Input directory does not exist: {input_dir}")
 
-    audio_files = list(input_path.glob(f"*{audio_ext}"))
+    if isinstance(audio_ext, str):
+        extensions = (audio_ext,)
+    else:
+        extensions = tuple(audio_ext)
+
+    audio_files: List[Path] = []
+    seen = set()
+    for ext in extensions:
+        normalized = ext if ext.startswith(".") else f".{ext}"
+        for match in input_path.glob(f"*{normalized}"):
+            resolved = match.resolve()
+            if resolved not in seen:
+                seen.add(resolved)
+                audio_files.append(match)
+
+    audio_files.sort()
     pairs = []
     missing_srt = []
 
